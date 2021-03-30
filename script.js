@@ -1,3 +1,16 @@
+function createMenu(){
+	const container = document.createElement('div')
+	container.classList.add('menu')
+	document.body.appendChild(container)
+	addButton(container,'Home', renderHomePage)
+	addButton(container,'Sign Up', renderSignUpPage)
+}
+function renderHomePage() {
+
+}
+function renderSignUpPage() {
+	
+}
 class User {
  constructor(name, surname, email, password) {
    this.name = name
@@ -41,36 +54,30 @@ function validateInput(firstName, lastName) {
     }
     return true
 }
-
+function addTextInput(parent, placeholder, id) {
+	const input = document.createElement('input')
+	input.id = id
+    input.type = 'text'
+    input.placeholder = placeholder
+    parent.appendChild(input)
+}
+function addButton(parent, text, handler) {
+	const button = document.createElement('button')
+    button.innerText = text
+    button.onclick = handler
+    parent.appendChild(button)
+}
 
 function renderCreateAccountForm() {
-    const nameInput = document.createElement('input')
-    const surnameInput = document.createElement('input')
-    const email = document.createElement('input')
-    const password = document.createElement('input')
-    const button = document.createElement('button')
-    
-    nameInput.id = 'name'
-    nameInput.type = 'text'
-    nameInput.placeholder = 'Name'
-    surnameInput.id = 'surname'
-    surnameInput.placeholder = 'Surname'
-    email.id = 'email'
-    email.placeholder = 'E-mail'
-    password.id = 'password'
-    password.placeholder = 'Password'
-    button.innerText = 'Create Account'
-    button.onclick = createAccount
-    
-    document.body.appendChild(nameInput)
-    document.body.appendChild(surnameInput)
-    document.body.appendChild(email)
-    document.body.appendChild(password)
-    document.body.appendChild(button)
+    addTextInput(document.body, 'Name', 'name')
+    addTextInput(document.body, 'Surnameame', 'surname')
+    addTextInput(document.body, 'E-mail', 'email')
+    addTextInput(document.body, 'Password', 'password')
+    addButton(document.body,'Create Account', createAccount)
 }
 
 function init() {
-		renderCreateAccountForm()
+	  renderCreateAccountForm()
     const text = document.createElement('p')
     document.body.appendChild(text)
 }
