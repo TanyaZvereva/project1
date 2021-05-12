@@ -1,3 +1,9 @@
 input {
    display:block;
 }
+button.selected {
+    background-color: darkgrey;
+}
+p.error {
+    color: red;
+}
