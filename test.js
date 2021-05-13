@@ -1,7 +1,7 @@
 const _addOneUser =user=>{
     document.querySelector("div.menu button:nth-child(2)").click()
-    document.querySelector("#name").value = user[0]
-    document.querySelector("#surname").value = user[1]
+    document.querySelector("#firstName").value = user[0]
+    document.querySelector("#lastName").value = user[1]
     document.querySelector("#email").value = user[2]
     document.querySelector("#password").value = user[3]
     document.querySelector("div.page-contents button").click()
@@ -26,7 +26,8 @@ const loginInvalidUser = () => {
     document.querySelector("#password").value = '123450'
     document.querySelector("div.page-contents button").click()
 }
-addOneUser()
-addSeveralUsers()
-loginValidUser()
+
+// addOneUser()
+// addSeveralUsers()
+// loginValidUser()
 // loginInvalidUser()

@@ -1,10 +1,12 @@
 /* ToDo List:
--функция rendererSettingsPage
 -переписать функции, которые отвечают за создание элементов используя замыкания, чтобы исбежать повторов кода
--переписать функцию _addTextInput на addTextInput
 -добавить проверку на timeOut с приветствием
 -сделать так, что бы сохранялась история изменения аккаунта
--поменять name и surname на firstName и lastName
+-сделать проверку пароля в settings
+-переписать Id с camelCase на kebab-case
+-сделать сообщение, если введен неверный пароль,email,поле незаполнено и т.д.
+-скрыть кнопку settings
+
 
 */
 /******************************** Renderers ********************************/
@@ -14,40 +16,83 @@ function renderHomePage() {
 
 function renderSignUpPage() {
     highlightMenuItem(this)
-    addTextInput(contentContainer, 'First Name', 'name')
-    addTextInput(contentContainer, 'Last Name', 'surname')
-    addTextInput(contentContainer, 'E-mail', 'email')
-    addTextInput(contentContainer, 'Password', 'password')
+    addTextInput(contentContainer, {
+        placeholder: 'First Name',
+        id: 'firstName'
+    })
+    addTextInput(contentContainer, {
+        placeholder: 'Last Name',
+        id: 'lastName'
+    })
+    addTextInput(contentContainer, {
+        placeholder: 'E-mail',
+        id: 'email'
+    })
+    addTextInput(contentContainer, {
+        placeholder: 'Password',
+        id: 'password'
+    })
+    addTextInput(contentContainer, {
+        placeholder: 'Password (one more time)',
+        id: 'password-check'
+    })
     addButton(contentContainer, 'Create Account', createAccount)
 }
 
 function renderLogInPage() {
     highlightMenuItem(this)
-    addTextInput(contentContainer, 'E-mail', 'email')
-    addTextInput(contentContainer, 'Password', 'password')
+    addTextInput(contentContainer, {
+        placeholder: 'E-mail',
+        id: 'email'
+    })
+    addTextInput(contentContainer, {
+        placeholder: 'Password',
+        id: 'password'
+    })
     addButton(contentContainer, 'Submit', handleLogIn)
 }
 
 function renderSettingsPage() {
     highlightMenuItem(this)
-    addTextInput(contentContainer, 'First Name', 'name')
-    addTextInput(contentContainer, 'Last Name', 'surname')
-    addTextInput(contentContainer, 'E-mail', 'email')
-    addTextInput(contentContainer, 'Password', 'password')
+    addTextInput(contentContainer, {
+        value: currentUser.firstName,
+        id: 'firstName'
+    })
+    addTextInput(contentContainer, {
+        value: currentUser.lastName,
+        id: 'lastName'
+    })
+    addTextInput(contentContainer, {
+        value: currentUser.email,
+        id: 'email'
+    })
+    addTextInput(contentContainer, {
+        value: currentUser.password,
+        id: 'password'
+    })
     addButton(contentContainer, 'Save', updateAccount)
 }
-
 
 /******************************** Helpers ********************************/
 function createMenu() {
     menuContainer = createContainer(document.body, {
         className: 'menu'
     })
-    addButton(menuContainer, 'Home', renderHomePage, {id: 'home-btn'})
-    addButton(menuContainer, 'Sign Up', renderSignUpPage, {id: 'sign-up-btn'})
-    addButton(menuContainer, 'Log In', renderLogInPage, {id: 'log-in-btn'})
-    addButton(menuContainer, 'Log Out', handleLogOut, {id: 'log-out-btn'})
-    addButton(menuContainer, 'Settings', renderSettingsPage, {id: 'settings-btn'})
+    addButton(menuContainer, 'Home', renderHomePage, {
+        id: 'home-btn'
+    })
+    addButton(menuContainer, 'Sign Up', renderSignUpPage, {
+        id: 'sign-up-btn'
+    })
+    addButton(menuContainer, 'Log In', renderLogInPage, {
+        id: 'log-in-btn'
+    })
+    addButton(menuContainer, 'Log Out', handleLogOut, {
+        id: 'log-out-btn'
+    })
+    addButton(menuContainer, 'Settings', renderSettingsPage, {
+        id: 'settings-btn'
+    })
 }
 
 function handleLogIn() {
@@ -87,46 +132,52 @@ function showGreetings() {
     contentContainer.innerHTML = ''
     const text = document.createElement('p')
     contentContainer.appendChild(text)
-    text.innerText = `Hello, ${currentUser.name}!`
+    text.innerText = `Hello, ${currentUser.firstName}!`
 }
 
 function createAccount() {
-    const firstName = document.querySelector("#name").value
-    const lastName = document.querySelector("#surname").value
+    const firstName = document.querySelector("#firstName").value
+    const lastName = document.querySelector("#lastName").value
     const email = document.querySelector("#email").value
     const password = document.querySelector("#password").value
+    const passwordCheck = document.querySelector('#password-check').value
     const text = document.createElement('p')
     contentContainer.appendChild(text)
 
     if (!validateInput(firstName, lastName))
         return
 
-    if (firstName && lastName && password && email) {
-        text.innerText = `Successful registration`
-        const user = new User(firstName,lastName,email,password)
-        users.push(user)
-        document.querySelector("#name").value = ""
-        document.querySelector("#surname").value = ""
-        document.querySelector("#email").value = ""
-        document.querySelector("#password").value = ""
-    }
+    if (!firstName && !lastName && !password && !email)
+        return
+
+    if (password != passwordCheck)
+        return
+
+    text.innerText = `Successful registration`
+    const user = new User(firstName,lastName,email,password)
+    users.push(user)
+    document.querySelector("#firstName").value = ""
+    document.querySelector("#lastName").value = ""
+    document.querySelector("#email").value = ""
+    document.querySelector("#password").value = ""
+    document.querySelector("#password-check").value = ""
 }
 
 function updateAccount() {
-    const firstName = document.querySelector("#name").value
-    const lastName = document.querySelector("#surname").value
+    const firstName = document.querySelector("#firstName").value
+    const lastName = document.querySelector("#lastName").value
     const email = document.querySelector("#email").value
     const password = document.querySelector("#password").value
     if (!validateInput(firstName, lastName))
         return
 
     if (firstName && lastName && password && email) {
-       currentUser.name = firstName
-       currentUser.surname = lastName
-       currentUser.email = email
-       currentUser.password = password
+        currentUser.firstName = firstName
+        currentUser.lastName = lastName
+        currentUser.email = email
+        currentUser.password = password
     }
- 
+
 }
 
 function validateInput(firstName, lastName) {
@@ -147,19 +198,17 @@ function highlightMenuItem(menuItem) {
     menuItem.classList.add('selected')
 }
 
-
-
 /******************************** Constructors ********************************/
 class User {
-    constructor(name, surname, email, password) {
-        this.name = name
-        this.surname = surname
+    constructor(firstName, lastName, email, password) {
+        this.firstName = firstName
+        this.lastName = lastName
         this.email = email
         this.password = password
     }
 }
 /******************************** Creating HTML elements ********************************/
-function createContainer(parent, {className, id} = {}) {
+function createContainer(parent, {className, id}={}) {
     const container = document.createElement('div')
     if (className)
         container.classList.add(className)
@@ -167,14 +216,14 @@ function createContainer(parent, {className, id} = {}) {
         container.id = id
     return parent.appendChild(container)
 }
-function addTextInput(parent, placeholder, id) {
+function _addTextInput(parent, placeholder, id) {
     const input = document.createElement('input')
     input.id = id
     input.type = 'text'
     input.placeholder = placeholder
     parent.appendChild(input)
 }
-function _addTextInput(parent, {placeholder, value, className, id}={}) {
+function addTextInput(parent, {placeholder, value, className, id}={}) {
     const input = document.createElement('input')
     input.type = 'text'
     if (placeholder)
@@ -187,7 +236,7 @@ function _addTextInput(parent, {placeholder, value, className, id}={}) {
         input.id = id
     parent.appendChild(input)
 }
-function addButton(parent, text, handler, {className, id} = {}) {
+function addButton(parent, text, handler, {className, id}={}) {
     const button = document.createElement('button')
     button.innerText = text
     button.onclick = handler
@@ -212,3 +261,5 @@ const users = []
 let currentUser
 
 init()
+
+// window.addEventListener('keydown',function(event){})
