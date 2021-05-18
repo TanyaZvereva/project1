@@ -7,3 +7,6 @@ button.selected {
 p.error {
     color: red;
 }
+.hidden {
+    display: none;
+}

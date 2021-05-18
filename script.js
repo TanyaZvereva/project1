@@ -3,9 +3,9 @@
 -добавить проверку на timeOut с приветствием
 -сделать так, что бы сохранялась история изменения аккаунта
 -сделать проверку пароля в settings
--переписать Id с camelCase на kebab-case
 -сделать сообщение, если введен неверный пароль,email,поле незаполнено и т.д.
--скрыть кнопку settings
+-минимизировать вызовы функции querySelector
+-дописать функцию ChangePassword
 
 
 */
@@ -18,23 +18,23 @@ function renderSignUpPage() {
     highlightMenuItem(this)
     addTextInput(contentContainer, {
         placeholder: 'First Name',
-        id: 'firstName'
+        className: 'first-name'
     })
     addTextInput(contentContainer, {
         placeholder: 'Last Name',
-        id: 'lastName'
+        className: 'last-name'
     })
     addTextInput(contentContainer, {
         placeholder: 'E-mail',
-        id: 'email'
+        className: 'email'
     })
     addTextInput(contentContainer, {
         placeholder: 'Password',
-        id: 'password'
+        className: 'password'
     })
     addTextInput(contentContainer, {
         placeholder: 'Password (one more time)',
-        id: 'password-check'
+        className: 'password-check'
     })
     addButton(contentContainer, 'Create Account', createAccount)
 }
@@ -43,11 +43,11 @@ function renderLogInPage() {
     highlightMenuItem(this)
     addTextInput(contentContainer, {
         placeholder: 'E-mail',
-        id: 'email'
+        className: 'email'
     })
     addTextInput(contentContainer, {
         placeholder: 'Password',
-        id: 'password'
+        className: 'password'
     })
     addButton(contentContainer, 'Submit', handleLogIn)
 }
@@ -56,21 +56,35 @@ function renderSettingsPage() {
     highlightMenuItem(this)
     addTextInput(contentContainer, {
         value: currentUser.firstName,
-        id: 'firstName'
+        className: 'first-name'
     })
     addTextInput(contentContainer, {
         value: currentUser.lastName,
-        id: 'lastName'
+        className: 'last-name'
     })
     addTextInput(contentContainer, {
         value: currentUser.email,
-        id: 'email'
+        className: 'email'
+    })
+     addButton(contentContainer, 'Change password', showChangePasswordDialog, {
+        id: 'change-password-btn'
     })
     addTextInput(contentContainer, {
-        value: currentUser.password,
-        id: 'password'
+        placeholder: 'Old password',
+        className: 'old-password'
+    })
+     addTextInput(contentContainer, {
+        placeholder: 'Password',
+        className: 'password'
+    })
+     addTextInput(contentContainer, {
+        placeholder: 'Password (one more time)',
+        className: 'password-check'
     })
     addButton(contentContainer, 'Save', updateAccount)
+}
+function showChangePasswordDialog() {
+    
 }
 
 /******************************** Helpers ********************************/
@@ -88,23 +102,22 @@ function createMenu() {
         id: 'log-in-btn'
     })
     addButton(menuContainer, 'Log Out', handleLogOut, {
-        id: 'log-out-btn'
+        id: 'log-out-btn',
+        className: 'hidden'
     })
     addButton(menuContainer, 'Settings', renderSettingsPage, {
-        id: 'settings-btn'
+        id: 'settings-btn',
+        className: 'hidden'
     })
 }
 
 function handleLogIn() {
-    const email = document.querySelector("#email").value
-    const password = document.querySelector("#password").value
+    const email = document.querySelectorAll(".email")[0].value
+    const password = document.querySelectorAll(".password")[0].value
     for (const user of users) {
         if (user.email === email && user.password === password) {
             currentUser = user
-            document.querySelector('#log-in-btn').style.display = "none"
-            document.querySelector('#sign-up-btn').style.display = "none"
-            document.querySelector('#log-out-btn').style.display = ""
-            document.querySelector('#settings-btn').style.display = ""
+            toggleVisibility()
             showGreetings()
             document.querySelector('#home-btn').classList.add('selected')
             setTimeout(()=>document.querySelector('#home-btn').click(), 3000)
@@ -120,10 +133,7 @@ function handleLogIn() {
 }
 
 function handleLogOut() {
-    document.querySelector('#log-in-btn').style.display = ""
-    document.querySelector('#sign-up-btn').style.display = ""
-    document.querySelector('#log-out-btn').style.display = "none"
-    document.querySelector('#settings-btn').style.display = "none"
+    toggleVisibility()
     currentUser = null
     document.querySelector('#home-btn').click()
 }
@@ -136,11 +146,11 @@ function showGreetings() {
 }
 
 function createAccount() {
-    const firstName = document.querySelector("#firstName").value
-    const lastName = document.querySelector("#lastName").value
-    const email = document.querySelector("#email").value
-    const password = document.querySelector("#password").value
-    const passwordCheck = document.querySelector('#password-check').value
+    const firstName = document.querySelectorAll(".first-name")[0].value
+    const lastName = document.querySelectorAll(".last-name")[0].value
+    const email = document.querySelectorAll(".email")[0].value
+    const password = document.querySelectorAll(".password")[0].value
+    const passwordCheck = document.querySelectorAll('.password-check')[0].value
     const text = document.createElement('p')
     contentContainer.appendChild(text)
 
@@ -156,18 +166,18 @@ function createAccount() {
     text.innerText = `Successful registration`
     const user = new User(firstName,lastName,email,password)
     users.push(user)
-    document.querySelector("#firstName").value = ""
-    document.querySelector("#lastName").value = ""
-    document.querySelector("#email").value = ""
-    document.querySelector("#password").value = ""
-    document.querySelector("#password-check").value = ""
+    document.querySelectorAll(".first-name")[0].value = ""
+    document.querySelectorAll(".last-name")[0].value = ""
+    document.querySelectorAll(".email")[0].value = ""
+    document.querySelectorAll(".password")[0].value = ""
+    document.querySelectorAll(".password-check")[0].value = ""
 }
 
 function updateAccount() {
-    const firstName = document.querySelector("#firstName").value
-    const lastName = document.querySelector("#lastName").value
-    const email = document.querySelector("#email").value
-    const password = document.querySelector("#password").value
+    const firstName = document.querySelectorAll(".first-name")[0].value
+    const lastName = document.querySelectorAll(".last-name")[0].value
+    const email = document.querySelectorAll(".email")[0].value
+    const password = document.querySelectorAll(".password")[0].value
     if (!validateInput(firstName, lastName))
         return
 
@@ -198,6 +208,13 @@ function highlightMenuItem(menuItem) {
     menuItem.classList.add('selected')
 }
 
+function toggleVisibility() {
+    const ids = ['log-in-btn', 'sign-up-btn', 'log-out-btn', 'settings-btn']
+    for(const id of ids) {
+        document.querySelector('#' + id).classList.toggle('hidden')
+    }
+}
+
 /******************************** Constructors ********************************/
 class User {
     constructor(firstName, lastName, email, password) {
@@ -216,13 +233,7 @@ function createContainer(parent, {className, id}={}) {
         container.id = id
     return parent.appendChild(container)
 }
-function _addTextInput(parent, placeholder, id) {
-    const input = document.createElement('input')
-    input.id = id
-    input.type = 'text'
-    input.placeholder = placeholder
-    parent.appendChild(input)
-}
+
 function addTextInput(parent, {placeholder, value, className, id}={}) {
     const input = document.createElement('input')
     input.type = 'text'
@@ -236,6 +247,7 @@ function addTextInput(parent, {placeholder, value, className, id}={}) {
         input.id = id
     parent.appendChild(input)
 }
+
 function addButton(parent, text, handler, {className, id}={}) {
     const button = document.createElement('button')
     button.innerText = text
@@ -253,7 +265,6 @@ function init() {
         className: 'page-contents'
     })
     document.querySelector('#home-btn').click()
-    document.querySelector('#log-out-btn').style.display = "none"
 }
 //Global Variables
 let contentContainer, menuContainer

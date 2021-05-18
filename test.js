@@ -1,9 +1,10 @@
 const _addOneUser =user=>{
     document.querySelector("div.menu button:nth-child(2)").click()
-    document.querySelector("#firstName").value = user[0]
-    document.querySelector("#lastName").value = user[1]
-    document.querySelector("#email").value = user[2]
-    document.querySelector("#password").value = user[3]
+    document.querySelector(".first-name").value = user[0]
+    document.querySelector(".last-name").value = user[1]
+    document.querySelector(".email").value = user[2]
+    document.querySelector(".password").value = user[3]
+    document.querySelector('.password-check').value = user[3]
     document.querySelector("div.page-contents button").click()
 }
 const addOneUser = () => {
@@ -16,18 +17,18 @@ const addSeveralUsers = ()=>{
 }
 const loginValidUser = () => {
     document.querySelector("div.menu button:nth-child(3)").click()
-    document.querySelector("#email").value = 'test@yandex'
-    document.querySelector("#password").value = '123456'
+    document.querySelector(".email").value = 'test@yandex'
+    document.querySelector(".password").value = '123456'
     document.querySelector("div.page-contents button").click()
 }
 const loginInvalidUser = () => {
     document.querySelector("div.menu button:nth-child(3)").click()
-    document.querySelector("#email").value = 'test@yandex'
-    document.querySelector("#password").value = '123450'
+    document.querySelector(".email").value = 'test@yandex'
+    document.querySelector(".password").value = '123450'
     document.querySelector("div.page-contents button").click()
 }
 
-// addOneUser()
-// addSeveralUsers()
-// loginValidUser()
+addOneUser()
+addSeveralUsers()
+loginValidUser()
 // loginInvalidUser()
