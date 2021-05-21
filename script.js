@@ -5,7 +5,8 @@
 -сделать проверку пароля в settings
 -сделать сообщение, если введен неверный пароль,email,поле незаполнено и т.д.
 -минимизировать вызовы функции querySelector
--дописать функцию ChangePassword
+-переписать функции ChangePassword(избавится от ненужных переменных)
+-добавить таймер на сообщение о смене пароля
 
 
 */
@@ -66,25 +67,45 @@ function renderSettingsPage() {
         value: currentUser.email,
         className: 'email'
     })
-     addButton(contentContainer, 'Change password', showChangePasswordDialog, {
+    addButton(contentContainer, 'Save', updateAccount, {
+        id: 'save-btn'
+    })
+    addButton(contentContainer, 'Change password', showChangePasswordDialog, {
         id: 'change-password-btn'
     })
     addTextInput(contentContainer, {
         placeholder: 'Old password',
-        className: 'old-password'
+        className: 'old-password hidden'
+
     })
-     addTextInput(contentContainer, {
+    addTextInput(contentContainer, {
         placeholder: 'Password',
-        className: 'password'
+        className: 'password hidden'
     })
-     addTextInput(contentContainer, {
+    addTextInput(contentContainer, {
         placeholder: 'Password (one more time)',
-        className: 'password-check'
+        className: 'password-check hidden'
     })
-    addButton(contentContainer, 'Save', updateAccount)
 }
 function showChangePasswordDialog() {
-    
+    const oldPassword = document.querySelector('.old-password')
+    const password = document.querySelector('.password')
+    const passwordCheck = document.querySelector('.password-check')
+    oldPassword.classList.toggle('hidden')
+    password.classList.toggle('hidden')
+    passwordCheck.classList.toggle('hidden')
+    const firstName = document.querySelector(".first-name")
+    const lastName = document.querySelector(".last-name")
+    const email = document.querySelector(".email")
+    firstName.classList.toggle('hidden')
+    lastName.classList.toggle('hidden')
+    email.classList.toggle('hidden')
+
+    document.querySelector('#change-password-btn').classList.toggle('hidden')
+    document.querySelector('#save-btn').remove()
+    addButton(contentContainer, 'Save', updateAccount, {
+        id: 'save-btn'
+    })
 }
 
 /******************************** Helpers ********************************/
@@ -140,9 +161,7 @@ function handleLogOut() {
 
 function showGreetings() {
     contentContainer.innerHTML = ''
-    const text = document.createElement('p')
-    contentContainer.appendChild(text)
-    text.innerText = `Hello, ${currentUser.firstName}!`
+    createTextElement(contentContainer,  `Hello, ${currentUser.firstName}!`)
 }
 
 function createAccount() {
@@ -177,15 +196,23 @@ function updateAccount() {
     const firstName = document.querySelectorAll(".first-name")[0].value
     const lastName = document.querySelectorAll(".last-name")[0].value
     const email = document.querySelectorAll(".email")[0].value
-    const password = document.querySelectorAll(".password")[0].value
+    const oldPwd = document.querySelectorAll(".old-password")[0].value
+    const newPwd = document.querySelectorAll('.password')[0].value
+    const newPwdCheck = document.querySelectorAll('.password-check')[0].value
     if (!validateInput(firstName, lastName))
         return
 
-    if (firstName && lastName && password && email) {
+    if (firstName && lastName && email) {
         currentUser.firstName = firstName
         currentUser.lastName = lastName
         currentUser.email = email
-        currentUser.password = password
+    }
+
+    if (oldPwd === currentUser.password && newPwd ===newPwdCheck) {
+        currentUser.password = newPwd
+        contentContainer.innerHTML = ''
+        const msg = 'Password has been successfully changed'
+        createTextElement(contentContainer, msg)
     }
 
 }
@@ -210,7 +237,7 @@ function highlightMenuItem(menuItem) {
 
 function toggleVisibility() {
     const ids = ['log-in-btn', 'sign-up-btn', 'log-out-btn', 'settings-btn']
-    for(const id of ids) {
+    for (const id of ids) {
         document.querySelector('#' + id).classList.toggle('hidden')
     }
 }
@@ -258,6 +285,13 @@ function addButton(parent, text, handler, {className, id}={}) {
         button.id = id
     parent.appendChild(button)
 }
+
+function createTextElement(parent, txt) {
+    const p = document.createElement('p')
+    p.innerText = txt
+    parent.appendChild(p) 
+}
+
 /******************************** Initialization ********************************/
 function init() {
     createMenu()
