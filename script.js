@@ -7,6 +7,7 @@
 -минимизировать вызовы функции querySelector
 -переписать функции ChangePassword(избавится от ненужных переменных)
 -добавить таймер на сообщение о смене пароля
+-создать CSSкласс warning,добавить в него стили,прописать условие,при котором этот класс будет исплльзоваться
 
 
 */
@@ -17,23 +18,23 @@ function renderHomePage() {
 
 function renderSignUpPage() {
     highlightMenuItem(this)
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         placeholder: 'First Name',
         className: 'first-name'
     })
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         placeholder: 'Last Name',
         className: 'last-name'
     })
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         placeholder: 'E-mail',
         className: 'email'
     })
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         placeholder: 'Password',
         className: 'password'
     })
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         placeholder: 'Password (one more time)',
         className: 'password-check'
     })
@@ -161,7 +162,7 @@ function handleLogOut() {
 
 function showGreetings() {
     contentContainer.innerHTML = ''
-    createTextElement(contentContainer,  `Hello, ${currentUser.firstName}!`)
+    createTextElement(contentContainer, `Hello, ${currentUser.firstName}!`)
 }
 
 function createAccount() {
@@ -208,7 +209,7 @@ function updateAccount() {
         currentUser.email = email
     }
 
-    if (oldPwd === currentUser.password && newPwd ===newPwdCheck) {
+    if (oldPwd === currentUser.password && newPwd === newPwdCheck) {
         currentUser.password = newPwd
         contentContainer.innerHTML = ''
         const msg = 'Password has been successfully changed'
@@ -261,19 +262,27 @@ function createContainer(parent, {className, id}={}) {
     return parent.appendChild(container)
 }
 
-function addTextInput(parent, {placeholder, value, className, id}={}) {
-    const input = document.createElement('input')
-    input.type = 'text'
-    if (placeholder)
-        input.placeholder = placeholder
-    if (value)
-        input.value = value
-    if (className)
-        input.className = className
-    if (id)
-        input.id = id
-    parent.appendChild(input)
+function _addTextInput(withContainer) {
+    return function(parent, {placeholder, value, className, id}={}) {
+        if(withContainer){
+            parent = createContainer(parent)
+        }
+        const input = document.createElement('input')
+        input.type = 'text'
+        if (placeholder)
+            input.placeholder = placeholder
+        if (value)
+            input.value = value
+        if (className)
+            input.className = className
+        if (id)
+            input.id = id
+        parent.appendChild(input)
+    }
 }
+
+const addTextInputWithContainer = _addTextInput(true)
+const addTextInput = _addTextInput(false)
 
 function addButton(parent, text, handler, {className, id}={}) {
     const button = document.createElement('button')
@@ -289,7 +298,7 @@ function addButton(parent, text, handler, {className, id}={}) {
 function createTextElement(parent, txt) {
     const p = document.createElement('p')
     p.innerText = txt
-    parent.appendChild(p) 
+    parent.appendChild(p)
 }
 
 /******************************** Initialization ********************************/
