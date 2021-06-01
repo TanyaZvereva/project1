@@ -8,6 +8,7 @@
 -переписать функции ChangePassword(избавится от ненужных переменных)
 -добавить таймер на сообщение о смене пароля
 -создать CSSкласс warning,добавить в него стили,прописать условие,при котором этот класс будет исплльзоваться
+-разлбраться с классами, чтобы можно было добавлять несколько классов
 
 
 */
@@ -253,31 +254,44 @@ class User {
     }
 }
 /******************************** Creating HTML elements ********************************/
-function createContainer(parent, {className, id}={}) {
-    const container = document.createElement('div')
-    if (className)
-        container.classList.add(className)
-    if (id)
-        container.id = id
-    return parent.appendChild(container)
+function createHTMLElement(tagName) {
+    return function(parent, {className, id}={}) {
+        const element = document.createElement(tagName)
+        if (className)
+            element.className = className
+        //             element.classList.add(className)
+        if (id)
+            element.id = id
+        return parent.appendChild(element)
+    }
 }
+
+const createContainer = createHTMLElement('div')
+
+// function createContainer(parent, {className, id}={}) {
+//     const element = document.createElement('div')
+//     if (className)
+//         container.classList.add(className)
+//     if (id)
+//         container.id = id
+//     return parent.appendChild(container)
+// }
 
 function _addTextInput(withContainer) {
     return function(parent, {placeholder, value, className, id}={}) {
-        if(withContainer){
+        if (withContainer) {
             parent = createContainer(parent)
         }
-        const input = document.createElement('input')
-        input.type = 'text'
+
+        const input = createHTMLElement('input')(parent, {
+            className,
+            id
+        })
+
         if (placeholder)
             input.placeholder = placeholder
         if (value)
             input.value = value
-        if (className)
-            input.className = className
-        if (id)
-            input.id = id
-        parent.appendChild(input)
     }
 }
 
@@ -285,20 +299,19 @@ const addTextInputWithContainer = _addTextInput(true)
 const addTextInput = _addTextInput(false)
 
 function addButton(parent, text, handler, {className, id}={}) {
-    const button = document.createElement('button')
+
+    const button = createHTMLElement('button')(parent, {
+        className,
+        id
+    })
+
     button.innerText = text
     button.onclick = handler
-    if (className)
-        button.classList.add(className)
-    if (id)
-        button.id = id
-    parent.appendChild(button)
 }
 
 function createTextElement(parent, txt) {
-    const p = document.createElement('p')
+    const p = createHTMLElement('p')(parent)
     p.innerText = txt
-    parent.appendChild(p)
 }
 
 /******************************** Initialization ********************************/
