@@ -8,7 +8,7 @@
 -переписать функции ChangePassword(избавится от ненужных переменных)
 -добавить таймер на сообщение о смене пароля
 -создать CSSкласс warning,добавить в него стили,прописать условие,при котором этот класс будет исплльзоваться
--разлбраться с классами, чтобы можно было добавлять несколько классов
+
 
 
 */
@@ -21,23 +21,23 @@ function renderSignUpPage() {
     highlightMenuItem(this)
     addTextInputWithContainer(contentContainer, {
         placeholder: 'First Name',
-        className: 'first-name'
+        classNames: 'first-name'
     })
     addTextInputWithContainer(contentContainer, {
         placeholder: 'Last Name',
-        className: 'last-name'
+        classNames: 'last-name'
     })
     addTextInputWithContainer(contentContainer, {
         placeholder: 'E-mail',
-        className: 'email'
+        classNames: 'email'
     })
     addTextInputWithContainer(contentContainer, {
         placeholder: 'Password',
-        className: 'password'
+        classNames: 'password'
     })
     addTextInputWithContainer(contentContainer, {
         placeholder: 'Password (one more time)',
-        className: 'password-check'
+        classNames: 'password-check'
     })
     addButton(contentContainer, 'Create Account', createAccount)
 }
@@ -46,11 +46,11 @@ function renderLogInPage() {
     highlightMenuItem(this)
     addTextInput(contentContainer, {
         placeholder: 'E-mail',
-        className: 'email'
+        classNames: 'email'
     })
     addTextInput(contentContainer, {
         placeholder: 'Password',
-        className: 'password'
+        classNames: 'password'
     })
     addButton(contentContainer, 'Submit', handleLogIn)
 }
@@ -59,15 +59,15 @@ function renderSettingsPage() {
     highlightMenuItem(this)
     addTextInput(contentContainer, {
         value: currentUser.firstName,
-        className: 'first-name'
+        classNames: 'first-name'
     })
     addTextInput(contentContainer, {
         value: currentUser.lastName,
-        className: 'last-name'
+        classNames: 'last-name'
     })
     addTextInput(contentContainer, {
         value: currentUser.email,
-        className: 'email'
+        classNames: 'email'
     })
     addButton(contentContainer, 'Save', updateAccount, {
         id: 'save-btn'
@@ -77,16 +77,16 @@ function renderSettingsPage() {
     })
     addTextInput(contentContainer, {
         placeholder: 'Old password',
-        className: 'old-password hidden'
+        classNames: ['old-password', 'hidden']
 
     })
     addTextInput(contentContainer, {
         placeholder: 'Password',
-        className: 'password hidden'
+        classNames: ['password', 'hidden']
     })
     addTextInput(contentContainer, {
         placeholder: 'Password (one more time)',
-        className: 'password-check hidden'
+        classNames: ['password-check', 'hidden']
     })
 }
 function showChangePasswordDialog() {
@@ -113,7 +113,7 @@ function showChangePasswordDialog() {
 /******************************** Helpers ********************************/
 function createMenu() {
     menuContainer = createContainer(document.body, {
-        className: 'menu'
+        classNames: 'menu'
     })
     addButton(menuContainer, 'Home', renderHomePage, {
         id: 'home-btn'
@@ -126,11 +126,11 @@ function createMenu() {
     })
     addButton(menuContainer, 'Log Out', handleLogOut, {
         id: 'log-out-btn',
-        className: 'hidden'
+        classNames: 'hidden'
     })
     addButton(menuContainer, 'Settings', renderSettingsPage, {
         id: 'settings-btn',
-        className: 'hidden'
+        classNames: 'hidden'
     })
 }
 
@@ -255,11 +255,14 @@ class User {
 }
 /******************************** Creating HTML elements ********************************/
 function createHTMLElement(tagName) {
-    return function(parent, {className, id}={}) {
+    return function(parent, {classNames, id}={}) {
         const element = document.createElement(tagName)
-        if (className)
-            element.className = className
-        //             element.classList.add(className)
+        if (typeof classNames === 'string')
+            element.classList.add(classNames)
+        else if (classNames && classNames.length)
+            element.classList.add(...classNames)
+        //             element.classNames = classNames
+        //             element.classList.add(classNames)
         if (id)
             element.id = id
         return parent.appendChild(element)
@@ -268,23 +271,23 @@ function createHTMLElement(tagName) {
 
 const createContainer = createHTMLElement('div')
 
-// function createContainer(parent, {className, id}={}) {
+// function createContainer(parent, {classNames, id}={}) {
 //     const element = document.createElement('div')
-//     if (className)
-//         container.classList.add(className)
+//     if (classNames)
+//         container.classList.add(classNames)
 //     if (id)
 //         container.id = id
 //     return parent.appendChild(container)
 // }
 
 function _addTextInput(withContainer) {
-    return function(parent, {placeholder, value, className, id}={}) {
+    return function(parent, {placeholder, value, classNames, id}={}) {
         if (withContainer) {
             parent = createContainer(parent)
         }
 
         const input = createHTMLElement('input')(parent, {
-            className,
+            classNames,
             id
         })
 
@@ -298,10 +301,10 @@ function _addTextInput(withContainer) {
 const addTextInputWithContainer = _addTextInput(true)
 const addTextInput = _addTextInput(false)
 
-function addButton(parent, text, handler, {className, id}={}) {
+function addButton(parent, text, handler, {classNames, id}={}) {
 
     const button = createHTMLElement('button')(parent, {
-        className,
+        classNames,
         id
     })
 
@@ -318,7 +321,7 @@ function createTextElement(parent, txt) {
 function init() {
     createMenu()
     contentContainer = createContainer(document.body, {
-        className: 'page-contents'
+        classNames: 'page-contents'
     })
     document.querySelector('#home-btn').click()
 }
