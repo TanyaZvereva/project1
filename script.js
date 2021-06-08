@@ -173,25 +173,53 @@ function createAccount() {
     const password = document.querySelectorAll(".password")[0].value
     const passwordCheck = document.querySelectorAll('.password-check')[0].value
     const text = document.createElement('p')
+    let error
+
     contentContainer.appendChild(text)
 
-    if (!validateInput(firstName, lastName))
-        return
+    if (!validateInput(firstName, lastName)) {
+        document.querySelectorAll(".first-name")[0].parentElement.classList.add('warning')
+        document.querySelectorAll(".last-name")[0].parentElement.classList.add('warning')
+        error = true
+    }
 
-    if (!firstName && !lastName && !password && !email)
-        return
+    if (!firstName) {
+        document.querySelectorAll(".first-name")[0].parentElement.classList.add('warning')
+        error = true
+    }
+    if (!lastName) {
+        document.querySelectorAll(".last-name")[0].parentElement.classList.add('warning')
+        error = true
+    }
+    if (!email) {
+        document.querySelectorAll(".email")[0].parentElement.classList.add('warning')
+        error = true
+    }
+    if (!password) {
+        document.querySelectorAll(".password")[0].parentElement.classList.add('warning')
+        error = true
+    }
+    if (!passwordCheck) {
+        document.querySelectorAll('.password-check')[0].parentElement.classList.add('warning')
+        error = true
+    }
 
-    if (password != passwordCheck)
-        return
+    if (password != passwordCheck) {
+        document.querySelectorAll(".password")[0].parentElement.classList.add('warning')
+        document.querySelectorAll('.password-check')[0].parentElement.classList.add('warning')
+        error = true
+    }
 
-    text.innerText = `Successful registration`
-    const user = new User(firstName,lastName,email,password)
-    users.push(user)
-    document.querySelectorAll(".first-name")[0].value = ""
-    document.querySelectorAll(".last-name")[0].value = ""
-    document.querySelectorAll(".email")[0].value = ""
-    document.querySelectorAll(".password")[0].value = ""
-    document.querySelectorAll(".password-check")[0].value = ""
+    if (!error) {
+        text.innerText = `Successful registration`
+        const user = new User(firstName,lastName,email,password)
+        users.push(user)
+        document.querySelectorAll(".first-name")[0].value = ""
+        document.querySelectorAll(".last-name")[0].value = ""
+        document.querySelectorAll(".email")[0].value = ""
+        document.querySelectorAll(".password")[0].value = ""
+        document.querySelectorAll(".password-check")[0].value = ""
+    }
 }
 
 function updateAccount() {
