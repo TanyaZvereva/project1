@@ -7,7 +7,7 @@
 -минимизировать вызовы функции querySelector
 -переписать функции ChangePassword(избавится от ненужных переменных)
 -добавить таймер на сообщение о смене пароля
--создать CSSкласс warning,добавить в него стили,прописать условие,при котором этот класс будет исплльзоваться
+-создать CSSкласс warning,добавить в него стили,прописать условие,при котором этот класс будет исплльзоваться !!!!!
 
 
 
@@ -44,11 +44,11 @@ function renderSignUpPage() {
 
 function renderLogInPage() {
     highlightMenuItem(this)
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         placeholder: 'E-mail',
         classNames: 'email'
     })
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         placeholder: 'Password',
         classNames: 'password'
     })
@@ -57,15 +57,15 @@ function renderLogInPage() {
 
 function renderSettingsPage() {
     highlightMenuItem(this)
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         value: currentUser.firstName,
         classNames: 'first-name'
     })
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         value: currentUser.lastName,
         classNames: 'last-name'
     })
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         value: currentUser.email,
         classNames: 'email'
     })
@@ -75,18 +75,22 @@ function renderSettingsPage() {
     addButton(contentContainer, 'Change password', showChangePasswordDialog, {
         id: 'change-password-btn'
     })
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         placeholder: 'Old password',
         classNames: ['old-password', 'hidden']
 
     })
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         placeholder: 'Password',
         classNames: ['password', 'hidden']
     })
-    addTextInput(contentContainer, {
+    addTextInputWithContainer(contentContainer, {
         placeholder: 'Password (one more time)',
         classNames: ['password-check', 'hidden']
+    })
+     addButton(contentContainer, 'Save New Password', changePassword, {
+        id: 'save-new-pwd',
+        classNames: 'hidden'
     })
 }
 function showChangePasswordDialog() {
@@ -104,10 +108,12 @@ function showChangePasswordDialog() {
     email.classList.toggle('hidden')
 
     document.querySelector('#change-password-btn').classList.toggle('hidden')
-    document.querySelector('#save-btn').remove()
-    addButton(contentContainer, 'Save', updateAccount, {
-        id: 'save-btn'
-    })
+    //     document.querySelector('#save-btn').remove()
+    //     addButton(contentContainer, 'Save', updateAccount, {
+    //         id: 'save-btn'
+    //     })
+    document.querySelector('#save-btn').classList.add('hidden')
+    document.querySelector('#save-new-pwd').classList.remove('hidden')
 }
 
 /******************************** Helpers ********************************/
@@ -226,9 +232,7 @@ function updateAccount() {
     const firstName = document.querySelectorAll(".first-name")[0].value
     const lastName = document.querySelectorAll(".last-name")[0].value
     const email = document.querySelectorAll(".email")[0].value
-    const oldPwd = document.querySelectorAll(".old-password")[0].value
-    const newPwd = document.querySelectorAll('.password')[0].value
-    const newPwdCheck = document.querySelectorAll('.password-check')[0].value
+
     if (!validateInput(firstName, lastName))
         return
 
@@ -237,14 +241,18 @@ function updateAccount() {
         currentUser.lastName = lastName
         currentUser.email = email
     }
+}
 
+function changePassword() {
+    const oldPwd = document.querySelectorAll('.old-password input')[0].value
+    const newPwd = document.querySelectorAll('.password input')[0].value
+    const newPwdCheck = document.querySelectorAll('.password-check input')[0].value
     if (oldPwd === currentUser.password && newPwd === newPwdCheck) {
         currentUser.password = newPwd
         contentContainer.innerHTML = ''
         const msg = 'Password has been successfully changed'
         createTextElement(contentContainer, msg)
     }
-
 }
 
 function validateInput(firstName, lastName) {
@@ -311,13 +319,13 @@ const createContainer = createHTMLElement('div')
 function _addTextInput(withContainer) {
     return function(parent, {placeholder, value, classNames, id}={}) {
         if (withContainer) {
-            parent = createContainer(parent)
+            parent = createContainer(parent, {
+                classNames,
+                id
+            })
         }
 
-        const input = createHTMLElement('input')(parent, {
-            classNames,
-            id
-        })
+        const input = createHTMLElement('input')(parent)
 
         if (placeholder)
             input.placeholder = placeholder

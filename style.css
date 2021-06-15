@@ -11,6 +11,10 @@ input {
     margin: 5px 0;
 }
 
+input:focus {
+    outline: none;
+}
+
 .page-contents > div {
     border-style: solid;
     border-width: 1px;

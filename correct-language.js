@@ -37,7 +37,7 @@ const map = {
     'l': 'д',
     'b': 'и',
     'n': 'т',
-    '': 'э'
+    "'": 'э'
 
 }
 function correctLanguage() {
