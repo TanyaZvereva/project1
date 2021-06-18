@@ -36,6 +36,10 @@ p.error {
     display: none;
 }
 
-.warning {
-    border-color: #ED0A34;
+.warning, .warning input {
+    border-color: red;
+    color: red;
+}
+.warning ::placeholder {
+    color: red;
 }

@@ -7,7 +7,7 @@
 -минимизировать вызовы функции querySelector
 -переписать функции ChangePassword(избавится от ненужных переменных)
 -добавить таймер на сообщение о смене пароля
--создать CSSкласс warning,добавить в него стили,прописать условие,при котором этот класс будет исплльзоваться !!!!!
+-создать CSSкласс warning,добавить в него стили,прописать условие,при котором этот класс будет исплльзоваться (log in)!!!!!
 
 
 
@@ -88,7 +88,7 @@ function renderSettingsPage() {
         placeholder: 'Password (one more time)',
         classNames: ['password-check', 'hidden']
     })
-     addButton(contentContainer, 'Save New Password', changePassword, {
+    addButton(contentContainer, 'Save New Password', changePassword, {
         id: 'save-new-pwd',
         classNames: 'hidden'
     })
@@ -143,6 +143,26 @@ function createMenu() {
 function handleLogIn() {
     const email = document.querySelectorAll(".email")[0].value
     const password = document.querySelectorAll(".password")[0].value
+    if (!email) {
+        document.querySelectorAll(".email")[0].classList.add('warning')
+        document.querySelectorAll(".email input")[0].oninput = function() {
+            if (this.value)
+                this.parentElement.classList.remove('warning')
+            else
+                this.parentElement.classList.add('warning')
+        }
+        error = true
+    }
+    if (!password) {
+        document.querySelectorAll(".password")[0].classList.add('warning')
+        document.querySelectorAll(".password input")[0].oninput = function() {
+            if (this.value)
+                this.parentElement.classList.remove('warning')
+            else
+                this.parentElement.classList.add('warning')
+        }
+        error = true
+    }
     for (const user of users) {
         if (user.email === email && user.password === password) {
             currentUser = user
@@ -173,46 +193,85 @@ function showGreetings() {
 }
 
 function createAccount() {
-    const firstName = document.querySelectorAll(".first-name")[0].value
-    const lastName = document.querySelectorAll(".last-name")[0].value
-    const email = document.querySelectorAll(".email")[0].value
-    const password = document.querySelectorAll(".password")[0].value
-    const passwordCheck = document.querySelectorAll('.password-check')[0].value
+    const firstName = document.querySelectorAll(".first-name input")[0].value
+    const lastName = document.querySelectorAll(".last-name input")[0].value
+    const email = document.querySelectorAll(".email input")[0].value
+    const password = document.querySelectorAll(".password input")[0].value
+    const passwordCheck = document.querySelectorAll('.password-check input')[0].value
     const text = document.createElement('p')
     let error
 
     contentContainer.appendChild(text)
 
     if (!validateInput(firstName, lastName)) {
-        document.querySelectorAll(".first-name")[0].parentElement.classList.add('warning')
-        document.querySelectorAll(".last-name")[0].parentElement.classList.add('warning')
+        document.querySelectorAll(".first-name")[0].classList.add('warning')
+        document.querySelectorAll(".last-name")[0].classList.add('warning')
         error = true
     }
 
     if (!firstName) {
-        document.querySelectorAll(".first-name")[0].parentElement.classList.add('warning')
+        document.querySelectorAll(".first-name")[0].classList.add('warning')
+        document.querySelectorAll(".first-name input")[0].oninput = function() {
+            if (this.value)
+                this.parentElement.classList.remove('warning')
+            else
+                this.parentElement.classList.add('warning')
+        }
         error = true
     }
     if (!lastName) {
-        document.querySelectorAll(".last-name")[0].parentElement.classList.add('warning')
+        document.querySelectorAll(".last-name")[0].classList.add('warning')
+        document.querySelectorAll(".last-name input")[0].oninput = function() {
+            if (this.value)
+                this.parentElement.classList.remove('warning')
+            else
+                this.parentElement.classList.add('warning')
+        }
         error = true
     }
     if (!email) {
-        document.querySelectorAll(".email")[0].parentElement.classList.add('warning')
+        document.querySelectorAll(".email")[0].classList.add('warning')
+        document.querySelectorAll(".email input")[0].oninput = function() {
+            if (this.value)
+                this.parentElement.classList.remove('warning')
+            else
+                this.parentElement.classList.add('warning')
+        }
         error = true
     }
     if (!password) {
-        document.querySelectorAll(".password")[0].parentElement.classList.add('warning')
+        document.querySelectorAll(".password")[0].classList.add('warning')
+        document.querySelectorAll(".password input")[0].oninput = function() {
+            if (this.value)
+                this.parentElement.classList.remove('warning')
+            else
+                this.parentElement.classList.add('warning')
+        }
         error = true
     }
     if (!passwordCheck) {
-        document.querySelectorAll('.password-check')[0].parentElement.classList.add('warning')
+        document.querySelectorAll('.password-check')[0].classList.add('warning')
+        document.querySelectorAll(".password-check input")[0].oninput = function() {
+            if (this.value)
+                this.parentElement.classList.remove('warning')
+            else
+                this.parentElement.classList.add('warning')
+        }
         error = true
     }
 
     if (password != passwordCheck) {
-        document.querySelectorAll(".password")[0].parentElement.classList.add('warning')
-        document.querySelectorAll('.password-check')[0].parentElement.classList.add('warning')
+        document.querySelectorAll(".password")[0].classList.add('warning')
+        document.querySelectorAll('.password-check')[0].classList.add('warning')
+        document.querySelectorAll(".password-check input")[0].oninput = function() {
+            if (this.value === password) {
+                this.parentElement.classList.remove('warning')
+                document.querySelectorAll('.password')[0].classList.remove('warning')
+            } else {
+                this.parentElement.classList.add('warning')
+                document.querySelectorAll('.password')[0].classList.add('warning')
+            }
+        }
         error = true
     }
 
